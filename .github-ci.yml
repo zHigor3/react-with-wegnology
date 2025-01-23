@@ -1,0 +1,42 @@
+stages:
+  - setup
+  - deploy
+
+# Job para instalar dependências e configurar o ambiente
+setup_job:
+  stage: setup
+  image: node:20.18.1
+  script:
+    - echo "Instalando dependências do projeto..."
+    - npm install --legacy-peer-deps
+    
+  artifacts:
+    paths:
+      - node_modules/ # Cacheia os módulos instalados para otimizar futuros pipelines
+
+# Job para limpar e mover arquivos
+deploy_files:
+  stage: deploy
+  image: node:20.18.1
+  script:
+    - echo "Iniciando build do projeto..."
+    - npm run build
+    - echo "Instalando Wegnology CLI..."
+    - npm install wegnology-cli --legacy-peer-deps
+    - echo "Configurando Wegnology CLI..."
+    - echo "TOKEN" | npx wegnology set-token
+    - npx wegnology files download
+    - echo "Limpando a pasta 'react-bundles/develop'..."
+    - rm -rf files/react-bundles/* # Remove tudo na pasta target
+    - mkdir files/react-bundles/develop/
+    - mkdir files/react-bundles/v1.0.0/
+    - echo "Copiando arquivos de 'build' para 'react-bundles/develop'..."
+    - cp -R build/* files/react-bundles/develop/ # Copia o conteúdo do build para a pasta target
+    - cp -R build/* files/react-bundles/v1.0.0/ # Copia o conteúdo do build para a pasta target
+    - echo "Fazendo upload dos arquivos para o Wegnology..."
+    - npx wegnology files upload
+  dependencies:
+    - setup_job # Garante que o job de setup seja executado antes
+  artifacts:
+    paths:
+      - build/ # Cacheia o build feito para otimizar futuros pipelines

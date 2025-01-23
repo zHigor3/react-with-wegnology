@@ -1,0 +1,24 @@
+{
+   "navbar": {
+      "lang": "Language",
+      "theme": "Theme"
+   },
+   "lang": {
+      "ptbr": "Portuguese/BR",
+      "en": "English"
+   },
+   "theme": {
+      "light": "Light",
+      "dark": "Dark"
+   },
+   "footer": {
+      "about": "About",
+      "aboutDev": "About the Developer",
+      "devBy": "Developed by",
+      "personality": "a technology and web development enthusiast.",
+      "contact": "Contact",
+      "tecUsed": "Technologies Used",
+      "importantLinks": "Important Links",
+      "rights": "All rights reserved."
+   }
+}
